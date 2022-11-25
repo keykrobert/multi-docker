@@ -1,0 +1,15 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t keykrobert/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - - docker run -e CI=true keykrobert/react-test npm test
+after_success:
+  - docker build -t keykrobert/multi-client ./client
+  - docker build -t keykrobert/multi-nginx ./nginx
+  - docker build -t keykrobert/multi-server ./server
+  - docker build -t keykrobert/multi-worker ./worker
